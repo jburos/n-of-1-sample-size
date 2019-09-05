@@ -19,7 +19,7 @@ priors <- specify_priors(response_prop = response_prop)
 
 # simulate data according to priors
 simd <- simdata(n_draws = 10, total_n = 700, response_prop = response_prop,
-                priors = priors, seed = seed)
+                prior = priors, seed = seed)
 
 # plot the prior on the intercept (proportion of responses meeting "sufficiency" criteria)
 tbl_df(list(sufficient_response = brms::inv_logit_scaled(
