@@ -1,0 +1,267 @@
+---
+title: "Prototype simtest without random effects"
+author: "Jacqueline Buros"
+date: "9/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(here)
+library(tidyverse)
+library(future)
+library(brms)
+source(here('simdata.function.R'))
+future::plan(multicore)
+ggplot2::theme_set(theme_minimal())
+
+# set the seed & run parameters
+seed <- 122355482
+run_date <- '2019-09-05'
+run_desc <- 'prototype_simtest_no_raneff'
+run_formula <- sufficient_response ~ duration_5_days + duration_27_days + notify_high
+set.seed(seed)
+
+# specify the priors
+response_prop <- 0.3
+
+# load simulated data 
+simd <- readRDS(here('.brms_fits',
+                     glue::glue('{run_desc}_{run_date}_{seed}.simd.Rds')))
+prior_fit <- attr(simd, 'prior_fit')
+
+# load priors used to simulate data
+priors <- readRDS(here('.brms_fits',
+                              glue::glue('{run_desc}_{run_date}_{seed}.priors.Rds')))
+
+# load fits using simulated data
+simfits <- readRDS(here('.brms_fits',
+                        glue::glue('{run_desc}_{run_date}_{seed}.fits.Rds')))
+```
+
+The purpose of this document is to review the quality of data simulations & fits to simulated data. Though we will be reviewing fits to simulated data at a particular sample size, this will serve as a prototype of the process used to evaluate the quality of results at various sample sizes. 
+
+## Review priors & model
+
+First we should review the priors used to simulate our data (& also used as priors to our model fit, by the way).
+
+(Note that, for each `draw` in our simulation process, the priors are non-biased in the sense that the parameters for effects of interest are centered at 0, however each draw uses a *_particular_* value of that parameter drawn from the prior distribution to simulate data.)
+
+We will see what this means as we go through the simulated data process.
+
+### Prior on `b_Intercept`
+
+The `Intercept` term defines the proportion of the population in the 15-day study length meeting the criteria for a "sufficient" response.
+
+I have put a fairly narrow prior centered at the 30% mark or (after applying a logit transform) `logit(0.3)` (`r scales::comma(brms::logit_scaled(0.3), accuracy = 0.01)`):
+
+```{r prior-Intercept}
+priors %>% 
+  dplyr::filter(class == 'Intercept') %>%
+  dplyr::select(prior) %>%
+  unlist()
+```
+
+Here is what this distribution looks like when transformed back to the inv_logit or original scale:
+
+```{r prior-Intercept-plot, echo = FALSE}
+tbl_df(list(sufficient_response = brms::inv_logit_scaled(
+  brms::rstudent_t(n = 1000,
+                   df = 10,
+                   mu = brms::logit_scaled(response_prop),
+                   sigma = 0.3)))) %>%
+  ggplot(., aes(x = sufficient_response)) + 
+  geom_density(fill = 'lightblue') +
+  geom_vline(aes(xintercept = response_prop), linetype = 'dashed') + 
+  ggtitle('Prior distribution on `b_Intercept` (proportion of responses meeting criteria)') + 
+  scale_x_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(caption = glue::glue('Vertical line shows value at x = {response_prop}'))
+```
+
+### Prior on `b_duration_X`
+
+We originally started with what is a typical weakly informative prior (`normal(0, 1)`) on the `beta` effects describing the offset from the response at 15 days for the other two study durations of 5 & 27 days. However this led to much larger effect sizes than I would have expected (ie sufficient-response rates close to 80% in one group).
+
+In this set of responses the prior on these betas is more narrow: `r priors %>% dplyr::filter(class == 'b' & coef == '') %>% dplyr::select(prior) %>% unlist()`.
+
+Let's see how that translates into a more familiar metric such as an OR.
+
+
+```{r prior-beta-duration-plot, echo = F}
+tbl_df(list(`exp(beta)` = exp(
+  rnorm(n = 1000, mean = 0, sd = 0.4)))) %>%
+  ggplot(., aes(x = `exp(beta)`)) + 
+  geom_density(fill = 'lightgrey') +
+  geom_vline(aes(xintercept = exp(0)), linetype = 'dashed') + 
+  ggtitle('Prior distribution on `b_duration_X` (duration impact on response)') + 
+  labs(caption = glue::glue('Vertical line shows value at x = exp(0)'))
+```
+
+This suggests even this distribution is too large for our betas -- I say this because there is significant density at a two-fold difference in response depending on the study duration (however -- maybe this is right?).
+
+Nonetheless in this review we are only looking at 10 particular realizations from this distribution.
+
+```{r prior-beta-duration}
+bayesplot::mcmc_hist(as.array(prior_fit),
+                     regex_pars = 'b_duration_\\.*',
+                     transformations = 'exp')
+```
+
+### Prior on `b_notify_high`
+
+Finally we will review the priors on our notification level.
+
+Here we start with a more narrow prior than for the duration since I expect this will be a weaker effect.
+
+Our prior is: `r priors %>% dplyr::filter(class == 'b' & coef == 'notify_high') %>% dplyr::select(prior) %>% unlist()`.
+
+Let's see how that translates into a more familiar metric such as an OR.
+
+```{r prior-beta-notify-plot, echo = F}
+tbl_df(list(`exp(beta)` = exp(
+  rnorm(n = 1000, mean = 0, sd = 0.1)))) %>%
+  ggplot(., aes(x = `exp(beta)`)) + 
+  geom_density(fill = 'lightpink') +
+  geom_vline(aes(xintercept = exp(0)), linetype = 'dashed') + 
+  ggtitle('Prior distribution on `b_notify_high` (notification impact on response)') + 
+  labs(caption = glue::glue('Vertical line shows value at x = exp(0)'))
+```
+
+This is still centered at 0 (OR = 1) but with a more narrow distribution that we had used for the duration effect. Keep in mind that these are both starting points; we can improve upon them in future versions.
+
+Nonetheless in this review we are only looking at 10 particular realizations from this distribution.
+
+```{r prior-beta-notify}
+bayesplot::mcmc_hist(as.array(prior_fit),
+                     regex_pars = 'b_notify_high',
+                     transformations = 'exp')
+```
+
+## Simulated response data
+
+Finally let's take a look at our simulated response data under these 10 scenarios.
+
+```{r sim-response-plot, echo = F}
+sim_merged <- dplyr::bind_rows(simd, .id = '.draw') 
+sim_merged %>% 
+  dplyr::group_by(.draw, b_Intercept, duration_group, duration_days) %>% 
+  dplyr::summarise(mean_response = mean(sufficient_response)) %>% 
+  ggplot(., aes(x = brms::inv_logit_scaled(b_Intercept), y = mean_response)) + 
+  geom_point(aes(colour = duration_group)) + 
+  geom_line(aes(group = .draw), colour = 'lightgrey') +
+  geom_line(data = . %>% dplyr::filter(duration_days == 15), mapping = aes(colour = duration_group), linetype = 'dashed') +
+  ggtitle('Simulated response rate according to duration & `b_Intercept`') +
+  scale_y_continuous('Sufficient response (%)', labels = scales::percent) +
+  scale_x_continuous('inv_logit(b_Intercept)', labels = scales::comma_format(accuracy = 0.01))
+```
+
+## Posterior fits
+
+We can now review the posterior fits for each of these scenarios. First, let's do a "typical" or generic summary of the posterior vs the parameter values.
+
+```{r post-fits}
+sim_pars <- simd[[1]] %>% dplyr::select(starts_with('b_')) %>% dplyr::distinct() %>% unlist()
+sim_fit <- simfits[[1]]
+bayesplot::mcmc_recover_intervals(as.array(sim_fit, pars = names(sim_pars)), true = sim_pars) +
+  geom_hline(aes(yintercept = 0), linetype = 'dashed')
+```
+
+Next, we will write a function to summarise the metrics we "really" (supposedly) care about in our particular use case.
+
+I would say these are (for each parameter):
+
+1. Width of posterior 90% CI (credible interval)
+2. Does the true value fall within the 90% posterior credible interval (check calibration)
+3. For regression parameters, estimate the Type S (sign) error rate [if CI excludes 0]
+   - IE does this interval contain 0?
+       - if so, consider this analysis as "inconclusive"
+       - if *not*, call the beta as being < or > 0
+   - compare this determination to the direction of the "true effect"
+4. For regression parameters, estimate the Type M (magnitude) error rate [if CI excludes 0]
+   - IE does this interval contain 0?
+       - if so, consider this analysis as "inconclusive"
+       - if *not*, use the median value of the parameter as the "estimated effect"
+   - compare this determination to the value of the "true effect". Is it >2 times as large?
+
+Let's prototype this summary for each of our model fit summarized above.
+
+```{r post-fit-summary}
+sim_pars <- simd[[1]]
+sim_fit <- simfits[[1]]
+
+ci_widths <- 0.9
+
+# extract & summarize posterior draws vs true values for the parameters of interest
+post <- sim_fit %>%
+  tidybayes::spread_draws(`b_.*`, regex = TRUE) %>%
+  tidyr::gather(parname, posterior_value, starts_with('b_')) %>%
+  dplyr::group_by(parname) %>%
+  tidybayes::median_qi(posterior_value, .width = c(ci_widths)) %>%
+  dplyr::ungroup() %>%
+  dplyr::inner_join(sim_pars %>% 
+                      dplyr::select(starts_with('b_')) %>% 
+                      dplyr::distinct() %>% 
+                      tidyr::gather(parname, true_value, starts_with('b'))
+                    , by = "parname") %>%
+  dplyr::group_by(parname, .width) %>%
+  dplyr::summarise(ci_width = abs(.upper - .lower),
+                   ci_contains_true_value = dplyr::between(true_value, left = .lower, right = .upper),
+                   ci_contains_0 = dplyr::between(0, left = .lower, right = .upper),
+                   ci_type_s_error = dplyr::case_when(ci_contains_0 ~ NA_integer_,
+                                                      (posterior_value < 0) == (true_value < 0) ~ 0L,
+                                                      (posterior_value < 0) != (true_value < 0) ~ 1L,
+                                                      TRUE ~ NA_integer_),
+                   ci_type_m_error = dplyr::case_when(ci_contains_0 ~ NA_integer_,
+                                                      posterior_value / true_value > 2 ~ 1L,
+                                                      true_value / posterior_value > 2 ~ 1L,
+                                                      TRUE ~ 0L),
+  ) %>%
+  dplyr::ungroup()
+
+print(post)
+```
+
+This is how we will summarize the results for all 10 fits. We will additionally retain the "true value" in our result vector since we will eventually want to summarise how our fit quality changes for different magnitudes of effect.
+
+```{r sim-results}
+extract_and_summarise <- function(sim_fit, sim_pars, ci_widths = 0.9) {
+  sim_fit %>%
+    tidybayes::spread_draws(`b_.*`, regex = TRUE) %>%
+    tidyr::gather(parname, posterior_value, starts_with('b_')) %>%
+    dplyr::group_by(parname) %>%
+    tidybayes::median_qi(posterior_value, .width = c(ci_widths)) %>%
+    dplyr::ungroup() %>%
+    dplyr::inner_join(sim_pars %>% 
+                        dplyr::mutate(sample_size = nrow(.)) %>%
+                        dplyr::select(sample_size, starts_with('b_')) %>% 
+                        dplyr::distinct() %>% 
+                        tidyr::gather(parname, true_value, starts_with('b'))
+                      , by = "parname") %>%
+    dplyr::group_by(parname, .width, true_value, sample_size) %>%
+    dplyr::summarise(ci_width = abs(.upper - .lower),
+                     ci_contains_true_value = dplyr::between(true_value, left = .lower, right = .upper),
+                     ci_contains_0 = dplyr::between(0, left = .lower, right = .upper),
+                     ci_type_s_error = dplyr::case_when(ci_contains_0 ~ NA_integer_,
+                                                        (posterior_value < 0) == (true_value < 0) ~ 0L,
+                                                        (posterior_value < 0) != (true_value < 0) ~ 1L,
+                                                        TRUE ~ NA_integer_),
+                     ci_type_m_error = dplyr::case_when(ci_contains_0 ~ NA_integer_,
+                                                        posterior_value / true_value > 2 ~ 1L,
+                                                        true_value / posterior_value > 2 ~ 1L,
+                                                        TRUE ~ 0L),
+    ) %>%
+    dplyr::ungroup()
+}
+res <- purrr::map2_dfr(simfits, simd, extract_and_summarise, ci_widths = 0.9, .id = 'fit')
+
+# now we are going to summarise the type_m & type_s error rate for these few fits
+res %>% 
+  dplyr::rename(width = .width) %>%
+  dplyr::group_by(parname) %>%
+  dplyr::summarise_at(.vars = vars(starts_with('ci_')),
+                      .funs = list(~ mean(., na.rm = T)))
+
+```
+
+These are the summary stats we will collect for each posterior fit over a range of sample sizes (& simulated "true values" of parameters).
+
