@@ -72,6 +72,8 @@ simdata <- function(total_n = 700,
   # return merged data as list of data.frames, one per draw
   a <- sim_merged %>%
     tidyr::nest(-.draw)
-  a$data
+  
+  structure(a$data,
+            prior_fit = prior_fit)
 } 
 
