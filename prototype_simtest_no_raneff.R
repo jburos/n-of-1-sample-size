@@ -22,7 +22,7 @@ response_prop <- 0.3
 priors <- specify_priors(response_prop = response_prop)
 
 # simulate data according to priors
-simd <- simdata(n_draws = 100, total_n = 700,
+simd <- simdata(n_draws = 10, total_n = 700,
                 response_prop = response_prop,
                 prior = priors, seed = seed,
                 formula = run_formula
@@ -66,3 +66,5 @@ simfits <- brms::brm_multiple(run_formula,
 saveRDS(simfits, here('.brms_fits', glue::glue('{run_desc}_{run_date}_{seed}.fits.Rds')))
 # save simd object to disk
 saveRDS(simd, here('.brms_fits', glue::glue('{run_desc}_{run_date}_{seed}.simd.Rds')))
+# save priors object to disk
+saveRDS(priors, here('.brms_fits', glue::glue('{run_desc}_{run_date}_{seed}.priors.Rds')))
