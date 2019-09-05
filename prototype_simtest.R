@@ -1,4 +1,6 @@
 
+# Prototype simtest process without random effects
+
 library(here)
 library(tidyverse)
 library(future)
@@ -9,7 +11,8 @@ ggplot2::theme_set(theme_minimal())
 
 # set the seed & run parameters
 seed <- 122355482
-date <- "2019-09-05"
+run_date <- '2019-09-05'
+run_desc <- 'prototype_simtest'
 set.seed(seed)
 
 # specify the priors
@@ -18,8 +21,11 @@ response_prop <- 0.3
 priors <- specify_priors(response_prop = response_prop)
 
 # simulate data according to priors
-simd <- simdata(n_draws = 10, total_n = 700, response_prop = response_prop,
-                prior = priors, seed = seed)
+simd <- simdata(n_draws = 100, total_n = 700,
+                response_prop = response_prop,
+                prior = priors, seed = seed,
+                formula = sufficient_response ~ duration_5_days + duration_27_days + notify_high
+                )
 
 # plot the prior on the intercept (proportion of responses meeting "sufficiency" criteria)
 tbl_df(list(sufficient_response = brms::inv_logit_scaled(
@@ -43,6 +49,7 @@ sim_merged %>%
   ggplot(., aes(x = brms::inv_logit_scaled(b_Intercept), y = mean_response)) + 
   geom_point(aes(colour = duration_group)) + 
   geom_line(aes(group = .draw), colour = 'lightgrey') +
+  geom_line(data = . %>% dplyr::filter(duration_days == 15), mapping = aes(colour = duration_group), linetype = 'dashed') +
   ggtitle('Simulated response rate according to duration & `b_Intercept`')
 
 # now we fit our model to the simulated datasets
@@ -54,7 +61,7 @@ simfits <- brms::brm_multiple(sufficient_response ~ duration_group + notify_high
                               seed = seed
                               )
 
-
 # save simfits object to disk
-saveRDS(simfits, here('.brms_fits', glue::glue('prototype_simtest_{date}_{seed}.Rds')))
-
+saveRDS(simfits, here('.brms_fits', glue::glue('{run_desc}_{run_date}_{seed}.fits.Rds')))
+# save simd object to disk
+saveRDS(simd, here('.brms_fits', glue::glue('{run_desc}_{run_date}_{seed}.simd.Rds')))
