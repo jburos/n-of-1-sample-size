@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 .Rlib
+Rplots.pdf
+.brms_fits
