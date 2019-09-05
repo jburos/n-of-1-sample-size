@@ -7,7 +7,7 @@ options(mc.cores = 3)
 
 #' Specify default priors without direction of effect
 specify_priors <- function(response_prop) {
-  c(brms::prior(normal(0, 1), class = 'b', check = TRUE),
+  c(brms::prior(normal(0, 0.4), class = 'b', check = TRUE),
     brms::prior(normal(0, 0.1), class = 'b', coef = 'notify_high', check = TRUE),
     brms::prior_string(glue::glue('student_t(10, {brms::logit_scaled(response_prop)}, 0.3)'), class = 'Intercept', check = TRUE))
 }

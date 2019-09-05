@@ -6,13 +6,14 @@ library(tidyverse)
 library(future)
 library(brms)
 source(here('simdata.function.R'))
-#future::plan(sequential)
+future::plan(multicore)
 ggplot2::theme_set(theme_minimal())
 
 # set the seed & run parameters
 seed <- 122355482
 run_date <- '2019-09-05'
-run_desc <- 'prototype_simtest'
+run_desc <- 'prototype_simtest_with_raneff'
+run_formula <- sufficient_response ~ duration_5_days + duration_27_days + notify_high + (0 + notify_high | duration_group)
 set.seed(seed)
 
 # specify the priors
@@ -21,10 +22,11 @@ response_prop <- 0.3
 priors <- specify_priors(response_prop = response_prop)
 
 # simulate data according to priors
-simd <- simdata(n_draws = 100, total_n = 700,
+simd <- simdata(n_draws = 100,
+                total_n = 700,
                 response_prop = response_prop,
                 prior = priors, seed = seed,
-                formula = sufficient_response ~ duration_5_days + duration_27_days + notify_high
+                formula = run_formula
                 )
 
 # plot the prior on the intercept (proportion of responses meeting "sufficiency" criteria)
@@ -53,7 +55,7 @@ sim_merged %>%
   ggtitle('Simulated response rate according to duration & `b_Intercept`')
 
 # now we fit our model to the simulated datasets
-simfits <- brms::brm_multiple(sufficient_response ~ duration_group + notify_high + (notify_high | duration_group),
+simfits <- brms::brm_multiple(run_formula,
                               data = simd,
                               family = bernoulli,
                               prior = priors,
