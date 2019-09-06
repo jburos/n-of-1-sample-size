@@ -1,3 +1,5 @@
 install.packages('brms')
-install.packages('tidyverse')
+# install.packages('tidyverse')
 install.packages('tidybayes')
+install.packages('here')
+install.packages('future')
