@@ -3,7 +3,6 @@ library(brms)
 library(tidyverse)
 library(tidybayes)
 rstan::rstan_options(auto_write = TRUE)
-options(mc.cores = 3)
 
 #' Specify default priors without direction of effect
 specify_priors <- function(response_prop) {
