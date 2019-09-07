@@ -47,15 +47,9 @@ notify\_moderate
 
 </th>
 
-<th style="text-align:right;">
-
-motivation\_high
-
-</th>
-
 <th style="text-align:left;">
 
-scales::percent(invlogit\_linpred)
+motivation\_high: 0
 
 </th>
 
@@ -70,40 +64,6 @@ scales::percent(invlogit\_linpred)
 <td style="text-align:left;">
 
 5\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:left;">
-
-32.0%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-5\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
 
 </td>
 
@@ -125,13 +85,29 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:left;">
 
-15\_days
+5\_days
 
 </td>
 
 <td style="text-align:right;">
 
-0
+1
+
+</td>
+
+<td style="text-align:left;">
+
+32.0%
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
 
 </td>
 
@@ -163,12 +139,6 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
-
-0
-
-</td>
-
 <td style="text-align:left;">
 
 21.6%
@@ -182,12 +152,6 @@ scales::percent(invlogit\_linpred)
 <td style="text-align:left;">
 
 27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
 
 </td>
 
@@ -216,12 +180,6 @@ scales::percent(invlogit\_linpred)
 <td style="text-align:right;">
 
 1
-
-</td>
-
-<td style="text-align:right;">
-
-0
 
 </td>
 
@@ -793,19 +751,19 @@ b\_duration\_27\_days
 
 <td style="text-align:right;">
 
-0.9290278
+0.9268251
 
 </td>
 
 <td style="text-align:left;">
 
-93.0%
+92.0%
 
 </td>
 
 <td style="text-align:left;">
 
-24.0%
+26.0%
 
 </td>
 
@@ -839,13 +797,13 @@ b\_duration\_5\_days
 
 <td style="text-align:right;">
 
-0.7877726
+0.7893021
 
 </td>
 
 <td style="text-align:left;">
 
-96.0%
+98.0%
 
 </td>
 
@@ -885,7 +843,7 @@ b\_Intercept
 
 <td style="text-align:right;">
 
-0.4779637
+0.4772943
 
 </td>
 
@@ -931,7 +889,7 @@ b\_motivation\_high
 
 <td style="text-align:right;">
 
-1.5605992
+1.5642697
 
 </td>
 
@@ -977,13 +935,13 @@ b\_notify\_moderate
 
 <td style="text-align:right;">
 
-0.3489024
+0.3489257
 
 </td>
 
 <td style="text-align:left;">
 
-99.0%
+100.0%
 
 </td>
 

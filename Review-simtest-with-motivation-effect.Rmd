@@ -15,7 +15,6 @@ library(tidyverse)
 library(future)
 library(brms)
 library(kableExtra)
-library(webshot)
 source(here('simdata.function.R'))
 future::plan(multicore)
 ggplot2::theme_set(theme_minimal())
@@ -63,8 +62,7 @@ simd %>%
   dplyr::rename(`p` = `scales::percent(invlogit_linpred)`) %>%
   dplyr::arrange(duration_group, notify_moderate, motivation_high) %>%
   tidyr::spread(motivation_high, p, sep = ': ') %>%
-  kableExtra::kable() %>%
-  kableExtra::kable_styling()
+  kableExtra::kable()
 ```
 
 Of course, each draw of simulated data has a different _observed_ completion rate. There are two sources of variation contributing to the observed completion rate in each draw. One is the composition of the particular study population -- both the notification rate and the assignment to duration groups is randomized and so one would expect _some_ imbalance in these assignments in practice. 
