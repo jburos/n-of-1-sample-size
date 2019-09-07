@@ -265,9 +265,54 @@ simfits %>%
   ggtitle('Posterior Densities of Regression Parameters for n = 640')
 ```
 
+For comparison, we will review the same two summary outputs from a run with a sample size of 1280 participants (twice that in the simulation above) and the same parameter values.
 
+```{r}
+run_date2 <- '2019-09-06'
+run_desc2 <- 'prototype_simtest_n_1280'
+run_formula2 <- study_completion ~ duration_5_days + duration_27_days + notify_moderate
 
+# load simulated data 
+simd2 <- readRDS(here('.brms_fits',
+                     glue::glue('{run_desc2}_{run_date2}_{seed}.simd.Rds')))
 
+# load priors used to simulate data
+priors2 <- readRDS(here('.brms_fits',
+                              glue::glue('{run_desc2}_{run_date2}_{seed}.priors.Rds')))
+
+# load fits using simulated data
+simfits2 <- readRDS(here('.brms_fits',
+                        glue::glue('{run_desc2}_{run_date2}_{seed}.fits.Rds')))
+
+res2 <- purrr::map_dfr(simfits2,
+                      extract_and_summarise,
+                      sim_pars = sim_pars,
+                      ci_widths = c(0.95),
+                      .id = 'fit')
+
+# now we are going to summarise the type_m & type_s error rate for these few fits
+res2 %>% 
+  dplyr::rename(width = .width) %>%
+  dplyr::group_by(parname, width) %>%
+  dplyr::summarise_at(.vars = vars(starts_with('ci_')),
+                      .funs = list(~ mean(., na.rm = T))) %>%
+  dplyr::mutate_at(.vars = vars(-parname, -width, -ci_width),
+                   .funs = list(~ scales::percent(., accuracy = 0.1))) %>%
+  kableExtra::kable(escape = FALSE)
+```
+
+```{r}
+simfits2 %>%
+  purrr::map_dfr(~ tidybayes::spread_draws(., `b_.*`, regex = TRUE), .id = '.fit') %>%
+  tidyr::gather(parname, value, starts_with('b_')) %>%
+  dplyr::filter(parname %in% c('b_duration_27_days', 'b_duration_5_days', 'b_notify_moderate')) %>%
+  ggplot(., aes(y = parname, x = exp(value), colour = parname, group = stringr::str_c(.fit, parname))) +
+  ggridges::geom_density_ridges(alpha = 0, color = "#0000001A") +
+  geom_vline(aes(xintercept = 1), linetype = 'dashed', colour = 'red') +
+  scale_x_continuous('Odds Ratio') +
+  scale_y_discrete('Parameter') +
+  ggtitle('Posterior Densities of Regression Parameters for n = 1280')
+```
 
 
 

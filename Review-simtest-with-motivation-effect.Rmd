@@ -57,8 +57,7 @@ These are the "target" completion rates for each of our groups used to simulate 
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
   dplyr::distinct(duration_group, notify_moderate, motivation_high, scales::percent(invlogit_linpred))  %>%
-  kableExtra::kable() %>%
-  kableExtra::kable_styling()
+  kableExtra::kable()
 ```
 
 Of course, each draw of simulated data has a different _observed_ completion rate. There are two sources of variation contributing to the observed completion rate in each draw. One is the composition of the particular study population -- both the notification rate and the assignment to duration groups is randomized and so one would expect _some_ imbalance in these assignments in practice. 
@@ -73,8 +72,7 @@ simd %>%
   dplyr::summarise(group_n = n()) %>%
   dplyr::ungroup() %>%
   tidyr::spread(.draw, group_n)  %>%
-  kableExtra::kable() %>%
-  kableExtra::kable_styling()
+  kableExtra::kable()
 ```
 
 This is very likely a modest influence on the observed rates, but it is nonetheless there.
@@ -245,8 +243,7 @@ res %>%
                       .funs = list(~ mean(., na.rm = T))) %>%
   dplyr::mutate_at(.vars = vars(-parname, -width, -ci_width),
                    .funs = list(~ scales::percent(., accuracy = 0.1))) %>%
-  kableExtra::kable() %>%
-  kableExtra::kable_styling()
+  kableExtra::kable()
 ```
 
 The width of the credible intervals shown above, however, is on the log(OR) scale. It's not very easy to tell what that might look like in practice.
@@ -257,7 +254,7 @@ Let's review what the posterior density for the OR looks like in order to better
 simfits %>%
   purrr::map_dfr(~ tidybayes::spread_draws(., `b_.*`, regex = TRUE), .id = '.fit') %>%
   tidyr::gather(parname, value, starts_with('b_')) %>%
-  dplyr::filter(parname %in% c('b_duration_27_days', 'b_duration_5_days', 'b_notify_moderate')) %>%
+  dplyr::filter(parname %in% c('b_duration_27_days', 'b_duration_5_days', 'b_notify_moderate', 'b_motivation')) %>%
   ggplot(., aes(y = parname, x = exp(value), colour = parname, group = stringr::str_c(.fit, parname))) +
   ggridges::geom_density_ridges(alpha = 0, color = "#0000001A") +
   geom_vline(aes(xintercept = 1), linetype = 'dashed', colour = 'red') +
