@@ -20,7 +20,7 @@ simdata <- function(n_draws = 10,
                     b_notify_moderate = log(1.1),
                     completion_props = c(0.3, 0.2, 0.1),
                     sample_props = c(0.2, 0.6, 0.2),
-                    duration_days = c(5, 15, 27)) {
+                    duration_days = c(5, 15, 27), ...) {
 
   # return simulated data as a list of data.frames `n_draws` long
   # where each data.frame is an independent simulation of the data with 
@@ -31,8 +31,15 @@ simdata <- function(n_draws = 10,
                                     notify_prop = notify_prop,
                                     completion_props = completion_props,
                                     sample_props = sample_props,
-                                    duration_days = duration_days),
+                                    duration_days = duration_days, ...),
                  simplify = F)
+}
+
+get_duration_ns <- function(total_n = 700,
+                            sample_props = c(0.2, 0.6, 0.2)) {
+  a <- rbinom(n = length(sample_props)-1, size = total_n, prob = sample_props[1:2])
+  a[[length(sample_props)]] <- total_n - sum(a)
+  a
 }
 
 simulate_data_once <- function(total_n = 700,
@@ -50,7 +57,7 @@ simulate_data_once <- function(total_n = 700,
                    b_motivation_high = b_motivation_high,
                    motivation_prop = motivation_prop
   )) %>%
-    dplyr::mutate(duration_n = as.integer(total_n*sample_prop)) %>%
+    dplyr::mutate(duration_n = get_duration_ns(total_n = total_n, sample_props = sample_prop)) %>%
     tidyr::uncount(weights = duration_n) %>%
     dplyr::mutate(notify_moderate = as.integer(rbernoulli(n = nrow(.), p = notify_prop)),
                   motivation_high = as.integer(rbernoulli(n = nrow(.), p = motivation_prop)),
