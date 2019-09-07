@@ -1,21 +1,12 @@
-Prototype simtest without a motivation effect
+Prototype simtest with a motivation effect
 ================
 Jacqueline Buros
 9/6/2019
 
-  - [Review simulation parameters](#review-simulation-parameters)
-  - [Review priors for the model fit](#review-priors-for-the-model-fit)
-      - [Prior on `b_Intercept`](#prior-on-b_intercept)
-      - [Prior on `b_duration_X`](#prior-on-b_duration_x)
-      - [Prior on `b_notify_high`](#prior-on-b_notify_high)
-  - [Posterior fits](#posterior-fits)
-      - [Summary of model fits](#summary-of-model-fits)
-
-The purpose of this document is to review the quality of data
-simulations & fits to simulated data. Though we will be reviewing fits
-to simulated data at a particular sample size, this will serve as a
-prototype of the process used to evaluate the quality of results at
-various sample sizes.
+The purpose of this document is to review the quality of model fits to
+simulated data. This document builds on an earlier doc by including a
+“motivation” effect on the outcome (completion rate) in addition to
+the effects of study duration & notification level.
 
 ## Review simulation parameters
 
@@ -30,8 +21,13 @@ Increasing the notification level to “moderate” confers a modest
 increase in completion rate uniformly across these three groups. This is
 reflected by a fixed OR of 1.1 (roughly a 10% increase).
 
-These are the “target” completion rates for each of our groups used to
-simulate our data.
+In addition, we are assuming that the motivation level will be set into
+two groups (mostly for simplicity of the simulation) high vs low, and
+that roughly 20% of the participants will be in the “high” motivation
+group. Motivation increases completion rate by an OR of 1.2.
+
+Given these parameter values, these are the “target” completion rates
+for each of our groups used to simulate our data.
 
 <table>
 
@@ -79,19 +75,19 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:right;">
 
-0
+1
 
 </td>
 
 <td style="text-align:right;">
 
-1
+0
 
 </td>
 
 <td style="text-align:left;">
 
-30.8%
+32.0%
 
 </td>
 
@@ -119,63 +115,7 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:left;">
 
-30.8%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-5\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:left;">
-
-32.8%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-5\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:left;">
-
-32.8%
+30.0%
 
 </td>
 
@@ -203,63 +143,7 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:left;">
 
-20.6%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:left;">
-
-20.6%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:left;">
-
-22.2%
+20.0%
 
 </td>
 
@@ -287,7 +171,7 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:left;">
 
-22.2%
+21.6%
 
 </td>
 
@@ -315,35 +199,7 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:left;">
 
-10.3%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:left;">
-
-11.3%
+10.0%
 
 </td>
 
@@ -371,35 +227,7 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:left;">
 
-11.3%
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:left;">
-
-10.3%
+10.9%
 
 </td>
 
@@ -502,83 +330,31 @@ motivation\_high
 
 <td style="text-align:right;">
 
-48
+63
 
 </td>
 
 <td style="text-align:right;">
 
-48
+68
 
 </td>
 
 <td style="text-align:right;">
 
-52
+60
 
 </td>
 
 <td style="text-align:right;">
 
-57
+63
 
 </td>
 
 <td style="text-align:right;">
 
-52
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-5\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-13
-
-</td>
-
-<td style="text-align:right;">
-
-16
-
-</td>
-
-<td style="text-align:right;">
-
-11
-
-</td>
-
-<td style="text-align:right;">
-
-13
-
-</td>
-
-<td style="text-align:right;">
-
-11
+67
 
 </td>
 
@@ -606,435 +382,19 @@ motivation\_high
 
 <td style="text-align:right;">
 
-53
+70
 
 </td>
 
 <td style="text-align:right;">
 
-51
+65
 
 </td>
 
 <td style="text-align:right;">
 
-56
-
-</td>
-
-<td style="text-align:right;">
-
-48
-
-</td>
-
-<td style="text-align:right;">
-
-52
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-5\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-14
-
-</td>
-
-<td style="text-align:right;">
-
-13
-
-</td>
-
-<td style="text-align:right;">
-
-9
-
-</td>
-
-<td style="text-align:right;">
-
-10
-
-</td>
-
-<td style="text-align:right;">
-
-13
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-147
-
-</td>
-
-<td style="text-align:right;">
-
-170
-
-</td>
-
-<td style="text-align:right;">
-
-144
-
-</td>
-
-<td style="text-align:right;">
-
-164
-
-</td>
-
-<td style="text-align:right;">
-
-147
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-45
-
-</td>
-
-<td style="text-align:right;">
-
-37
-
-</td>
-
-<td style="text-align:right;">
-
-39
-
-</td>
-
-<td style="text-align:right;">
-
-40
-
-</td>
-
-<td style="text-align:right;">
-
-40
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-159
-
-</td>
-
-<td style="text-align:right;">
-
-136
-
-</td>
-
-<td style="text-align:right;">
-
-171
-
-</td>
-
-<td style="text-align:right;">
-
-144
-
-</td>
-
-<td style="text-align:right;">
-
-151
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-33
-
-</td>
-
-<td style="text-align:right;">
-
-41
-
-</td>
-
-<td style="text-align:right;">
-
-30
-
-</td>
-
-<td style="text-align:right;">
-
-36
-
-</td>
-
-<td style="text-align:right;">
-
-46
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-55
-
-</td>
-
-<td style="text-align:right;">
-
-55
-
-</td>
-
-<td style="text-align:right;">
-
-58
-
-</td>
-
-<td style="text-align:right;">
-
-59
-
-</td>
-
-<td style="text-align:right;">
-
-46
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-9
-
-</td>
-
-<td style="text-align:right;">
-
-14
-
-</td>
-
-<td style="text-align:right;">
-
-13
-
-</td>
-
-<td style="text-align:right;">
-
-6
-
-</td>
-
-<td style="text-align:right;">
-
-13
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-54
-
-</td>
-
-<td style="text-align:right;">
-
-47
-
-</td>
-
-<td style="text-align:right;">
-
-47
+64
 
 </td>
 
@@ -1046,7 +406,163 @@ motivation\_high
 
 <td style="text-align:right;">
 
-62
+76
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+204
+
+</td>
+
+<td style="text-align:right;">
+
+198
+
+</td>
+
+<td style="text-align:right;">
+
+188
+
+</td>
+
+<td style="text-align:right;">
+
+204
+
+</td>
+
+<td style="text-align:right;">
+
+182
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+202
+
+</td>
+
+<td style="text-align:right;">
+
+171
+
+</td>
+
+<td style="text-align:right;">
+
+202
+
+</td>
+
+<td style="text-align:right;">
+
+183
+
+</td>
+
+<td style="text-align:right;">
+
+197
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+27\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+52
+
+</td>
+
+<td style="text-align:right;">
+
+74
+
+</td>
+
+<td style="text-align:right;">
+
+73
+
+</td>
+
+<td style="text-align:right;">
+
+74
+
+</td>
+
+<td style="text-align:right;">
+
+58
 
 </td>
 
@@ -1068,37 +584,37 @@ motivation\_high
 
 <td style="text-align:right;">
 
-1
+0
 
 </td>
 
 <td style="text-align:right;">
 
-10
+49
 
 </td>
 
 <td style="text-align:right;">
 
-12
+64
 
 </td>
 
 <td style="text-align:right;">
 
-10
+53
 
 </td>
 
 <td style="text-align:right;">
 
-13
+66
 
 </td>
 
 <td style="text-align:right;">
 
-7
+60
 
 </td>
 
@@ -1114,7 +630,8 @@ nonetheless there.
 The second source comes from the simulation of the outcome itself.
 
 Here is a sample of the observed completion rates for each of our 6
-covariate combinations.
+covariate
+combinations.
 
 ![](Review-simtest-with-motivation-effect_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
@@ -1125,7 +642,8 @@ covariate combinations.
 The `Intercept` term defines the proportion of the population in the
 15-day study length meeting the criteria for a “sufficient” response.
 
-I have put a fairly narrow prior centered at the 20% mark:
+I have put a fairly narrow prior centered at the 20%
+mark:
 
 ![](Review-simtest-with-motivation-effect_files/figure-gfm/prior-Intercept-plot-1.png)<!-- -->
 
@@ -1140,7 +658,8 @@ However this led to much larger effect sizes than I would have expected
 In this set of responses the prior on these betas is more narrow:
 normal(0, 0.4).
 
-Let’s see how that translates into a more familiar metric such as an OR.
+Let’s see how that translates into a more familiar metric such as an
+OR.
 
 ![](Review-simtest-with-motivation-effect_files/figure-gfm/prior-beta-duration-plot-1.png)<!-- -->
 
@@ -1158,7 +677,8 @@ expect this will be a weaker effect.
 
 Our prior is: .
 
-Let’s see how that translates into a more familiar metric such as an OR.
+Let’s see how that translates into a more familiar metric such as an
+OR.
 
 ![](Review-simtest-with-motivation-effect_files/figure-gfm/prior-beta-notify-plot-1.png)<!-- -->
 
@@ -1170,7 +690,8 @@ both starting points; we can improve upon them in future versions.
 
 We can now review the posterior fits for each of these scenarios. First,
 let’s do a “typical” or generic summary of the posterior vs the
-parameter values.
+parameter
+values.
 
 ![](Review-simtest-with-motivation-effect_files/figure-gfm/post-fits-1.png)<!-- -->
 
@@ -1272,19 +793,19 @@ b\_duration\_27\_days
 
 <td style="text-align:right;">
 
-0.9163996
+0.9290278
 
 </td>
 
 <td style="text-align:left;">
 
-88.0%
+93.0%
 
 </td>
 
 <td style="text-align:left;">
 
-18.0%
+24.0%
 
 </td>
 
@@ -1318,7 +839,7 @@ b\_duration\_5\_days
 
 <td style="text-align:right;">
 
-0.7833798
+0.7877726
 
 </td>
 
@@ -1330,7 +851,7 @@ b\_duration\_5\_days
 
 <td style="text-align:left;">
 
-34.0%
+42.0%
 
 </td>
 
@@ -1364,13 +885,13 @@ b\_Intercept
 
 <td style="text-align:right;">
 
-0.5041869
+0.4779637
 
 </td>
 
 <td style="text-align:left;">
 
-97.0%
+95.0%
 
 </td>
 
@@ -1410,31 +931,31 @@ b\_motivation\_high
 
 <td style="text-align:right;">
 
-0.8214826
-
-</td>
-
-<td style="text-align:left;">
-
-92.0%
-
-</td>
-
-<td style="text-align:left;">
-
-97.0%
-
-</td>
-
-<td style="text-align:left;">
-
-0.0%
+1.5605992
 
 </td>
 
 <td style="text-align:left;">
 
 100.0%
+
+</td>
+
+<td style="text-align:left;">
+
+100.0%
+
+</td>
+
+<td style="text-align:left;">
+
+NaN%
+
+</td>
+
+<td style="text-align:left;">
+
+NaN%
 
 </td>
 
@@ -1456,13 +977,13 @@ b\_notify\_moderate
 
 <td style="text-align:right;">
 
-0.3479631
+0.3489024
 
 </td>
 
 <td style="text-align:left;">
 
-100.0%
+99.0%
 
 </td>
 
@@ -1495,6 +1016,7 @@ log(OR) scale. It’s not very easy to tell what that might look like in
 practice.
 
 Let’s review what the posterior density for the OR looks like in order
-to better appreciate this.
+to better appreciate
+this.
 
 ![](Review-simtest-with-motivation-effect_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
