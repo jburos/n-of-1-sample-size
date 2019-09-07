@@ -2,7 +2,7 @@
 title: "Prototype simtest without random effects"
 author: "Jacqueline Buros"
 date: "9/5/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
