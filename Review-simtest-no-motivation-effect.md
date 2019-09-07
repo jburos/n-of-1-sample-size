@@ -3,6 +3,14 @@ Prototype simtest without a motivation effect
 Jacqueline Buros
 9/6/2019
 
+-   [Review simulation parameters](#review-simulation-parameters)
+-   [Review priors for the model fit](#review-priors-for-the-model-fit)
+    -   [Prior on `b_Intercept`](#prior-on-b_intercept)
+    -   [Prior on `b_duration_X`](#prior-on-b_duration_x)
+    -   [Prior on `b_notify_high`](#prior-on-b_notify_high)
+-   [Posterior fits](#posterior-fits)
+    -   [Summary of model fits](#summary-of-model-fits)
+
 The purpose of this document is to review the quality of data simulations & fits to simulated data. Though we will be reviewing fits to simulated data at a particular sample size, this will serve as a prototype of the process used to evaluate the quality of results at various sample sizes.
 
 Review simulation parameters
@@ -340,130 +348,9 @@ I would say these are (for each parameter):
     -   if *not*, use the median value of the parameter as the "estimated effect"
 -   compare this determination to the value of the "true effect". Is it &gt;2 times as large?
 
-Let's prototype this summary for each of our model fit summarized above.
+### Summary of model fits
 
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-parname
-</th>
-<th style="text-align:right;">
-.width
-</th>
-<th style="text-align:right;">
-ci\_width
-</th>
-<th style="text-align:left;">
-ci\_contains\_true\_value
-</th>
-<th style="text-align:left;">
-ci\_contains\_0
-</th>
-<th style="text-align:right;">
-ci\_type\_s\_error
-</th>
-<th style="text-align:right;">
-ci\_type\_m\_error
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-b\_duration\_27\_days
-</td>
-<td style="text-align:right;">
-0.9
-</td>
-<td style="text-align:right;">
-0.7457985
-</td>
-<td style="text-align:left;">
-TRUE
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-b\_duration\_5\_days
-</td>
-<td style="text-align:right;">
-0.9
-</td>
-<td style="text-align:right;">
-0.6806041
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:left;">
-TRUE
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-b\_Intercept
-</td>
-<td style="text-align:right;">
-0.9
-</td>
-<td style="text-align:right;">
-0.3927293
-</td>
-<td style="text-align:left;">
-TRUE
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-b\_notify\_moderate
-</td>
-<td style="text-align:right;">
-0.9
-</td>
-<td style="text-align:right;">
-0.2841230
-</td>
-<td style="text-align:left;">
-TRUE
-</td>
-<td style="text-align:left;">
-TRUE
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-</tbody>
-</table>
-This is how we will summarize the results for all 10 fits. We will additionally retain the "true value" in our result vector since we will eventually want to summarise how our fit quality changes for different magnitudes of effect.
+Summarizing these metrics for our 100 fits at this sample size (n = 640):
 
 <table>
 <thead>
