@@ -1,5 +1,5 @@
 ---
-title: "Prototype simtest without a motivation effect"
+title: "Prototype simtest with a motivation effect"
 author: "Jacqueline Buros"
 date: "9/6/2019"
 output: 
@@ -43,7 +43,7 @@ simfits <- readRDS(here('.brms_fits',
                         glue::glue('{run_desc}_{run_date}_{seed}.fits.Rds')))
 ```
 
-The purpose of this document is to review the quality of data simulations & fits to simulated data. Though we will be reviewing fits to simulated data at a particular sample size, this will serve as a prototype of the process used to evaluate the quality of results at various sample sizes. 
+The purpose of this document is to review the quality of model fits to simulated data. This document builds on an earlier doc by including a "motivation" effect on the outcome (completion rate) in addition to the effects of study duration & notification level.
 
 ## Review simulation parameters
 
@@ -51,7 +51,9 @@ First we should review the parameters used to simulate our data. In this round o
 
 Increasing the notification level to "moderate" confers a modest increase in completion rate uniformly across these three groups. This is reflected by a fixed OR of 1.1 (roughly a 10% increase).
 
-These are the "target" completion rates for each of our groups used to simulate our data.
+In addition, we are assuming that the motivation level will be set into two groups (mostly for simplicity of the simulation) high vs low, and that roughly 20% of the participants will be in the "high" motivation group. Motivation increases completion rate by an OR of 1.2.
+
+Given these parameter values, these are the "target" completion rates for each of our groups used to simulate our data.
 
 ```{r}
 simd %>%
@@ -254,7 +256,7 @@ Let's review what the posterior density for the OR looks like in order to better
 simfits %>%
   purrr::map_dfr(~ tidybayes::spread_draws(., `b_.*`, regex = TRUE), .id = '.fit') %>%
   tidyr::gather(parname, value, starts_with('b_')) %>%
-  dplyr::filter(parname %in% c('b_duration_27_days', 'b_duration_5_days', 'b_notify_moderate', 'b_motivation')) %>%
+  dplyr::filter(parname %in% c('b_duration_27_days', 'b_duration_5_days', 'b_notify_moderate', 'b_motivation_high')) %>%
   ggplot(., aes(y = parname, x = exp(value), colour = parname, group = stringr::str_c(.fit, parname))) +
   ggridges::geom_density_ridges(alpha = 0, color = "#0000001A") +
   geom_vline(aes(xintercept = 1), linetype = 'dashed', colour = 'red') +
