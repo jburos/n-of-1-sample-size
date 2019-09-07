@@ -5,74 +5,94 @@ library(tidybayes)
 rstan::rstan_options(auto_write = TRUE)
 
 #' Specify default priors without direction of effect
-specify_priors <- function(response_prop) {
+specify_priors <- function(completion_rate) {
   c(brms::prior(normal(0, 0.4), class = 'b', check = TRUE),
-    brms::prior(normal(0, 0.1), class = 'b', coef = 'notify_high', check = TRUE),
-    brms::prior_string(glue::glue('student_t(10, {brms::logit_scaled(response_prop)}, 0.3)'), class = 'Intercept', check = TRUE))
+    brms::prior(normal(0, 0.1), class = 'b', coef = 'notify_moderate', check = TRUE),
+    brms::prior_string(glue::glue('student_t(10, {brms::logit_scaled(completion_rate)}, 0.3)'), class = 'Intercept', check = TRUE))
 }
 
 #' simple wrapper to simulate data from a brms model
 #' @export
-simdata <- function(total_n = 700,
+simdata <- function(n_draws = 10,
+                    total_n = 700,
                     notify_prop = 0.5,
-                    response_prop = 0.3,
-                    n_draws = 10,
-                    warmup = 1000,
-                    prior = specify_priors(response_prop),
-                    chains = 1,
-                    iter = warmup + (n_draws / chains),
-                    family = brms::bernoulli,
-                    formula = sufficient_response ~ duration_5_days + duration_27_days + notify_high + (0 + notify_high | duration_group),
-                    ...) {
-  # construct covariate data
-  d <- tbl_df(list(duration_days = c(5, 15, 27),
-                   sample_prop = c(0.2, 0.6, 0.2)
-                   )) %>%
-    dplyr::mutate(sample_n = as.integer(total_n*sample_prop)) %>%
-    tidyr::uncount(weights = sample_n) %>%
-    dplyr::mutate(notify_high = as.integer(rbernoulli(n = nrow(.), p = notify_prop)),
-                  duration_group = factor(duration_days,
-                                          levels = c(5, 15, 27),
-                                          labels = paste(c(5, 15, 27), 'days'),
-                                          ordered = T),
-                  duration_5_days = as.integer(duration_days == 5),
-                  duration_27_days = as.integer(duration_days == 27),
-                  # fake response variable (not used in simulation)
-                  sufficient_response = as.integer(rbernoulli(n = nrow(.), p = response_prop))
+                    b_notify_moderate = log(1.1),
+                    completion_props = c(0.3, 0.2, 0.1),
+                    sample_props = c(0.2, 0.6, 0.2),
+                    duration_days = c(5, 15, 27), ...) {
+
+  # return simulated data as a list of data.frames `n_draws` long
+  # where each data.frame is an independent simulation of the data with 
+  # the given 
+  d <- replicate(n = n_draws,
+                 simulate_data_once(total_n = total_n,
+                                    b_notify_moderate = b_notify_moderate,
+                                    notify_prop = notify_prop,
+                                    completion_props = completion_props,
+                                    sample_props = sample_props,
+                                    duration_days = duration_days, ...),
+                 simplify = F)
+}
+
+get_duration_ns <- function(total_n = 700,
+                            sample_props = c(0.2, 0.6, 0.2)) {
+  a <- rbinom(n = length(sample_props)-1, size = total_n, prob = sample_props[1:2])
+  a[[length(sample_props)]] <- total_n - sum(a)
+  a
+}
+
+simulate_data_once <- function(total_n = 700,
+                               notify_prop = 0.5,
+                               motivation_prop = 0.2,
+                               b_notify_moderate = log(1.1),
+                               b_motivation_high = log(1.2),
+                               completion_props = c(0.3, 0.2, 0.1),
+                               sample_props = c(0.2, 0.6, 0.2),
+                               duration_days = c(5, 15, 27)) {
+  d <- tbl_df(list(study_duration = duration_days,
+                   sample_prop = sample_props,
+                   duration_intercept = brms::logit_scaled(completion_props),
+                   b_notify_moderate = b_notify_moderate,
+                   b_motivation_high = b_motivation_high,
+                   motivation_prop = motivation_prop
+  )) %>%
+    dplyr::mutate(duration_n = get_duration_ns(total_n = total_n, sample_props = sample_prop)) %>%
+    tidyr::uncount(weights = duration_n) %>%
+    dplyr::mutate(notify_moderate = as.integer(rbernoulli(n = nrow(.), p = notify_prop)),
+                  motivation_high = as.integer(rbernoulli(n = nrow(.), p = motivation_prop)),
+                  linpred = duration_intercept + b_notify_moderate*notify_moderate + b_motivation_high*motivation_prop,
+                  invlogit_linpred = brms::inv_logit_scaled(linpred)) %>%
+    dplyr::group_by(invlogit_linpred) %>%
+    dplyr::mutate(study_completion = as.integer(rbernoulli(n = n(), p = invlogit_linpred))) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(duration_group = factor(study_duration,
+                                          levels = duration_days,
+                                          labels = paste(duration_days, 'days', sep = '_'),
+                                          ordered = T
+                                          )
                   )
   
-  # simulate data from the priors according to the model
-  prior_fit <- brms::brm(formula = formula,
-                         data = d,
-                         sample_prior = "only",
-                         prior = prior,
-                         family = family,
-                         warmup = warmup,
-                         iter = iter,
-                         chains = chains,
-                         ...)
+  # transform duration-group specific vars to wide format
+  d %>%
+    dplyr::mutate(one = 1) %>%
+    # add intercepts as wide-vars
+    dplyr::left_join(d %>%
+                       dplyr::mutate(one = 1) %>%
+                       dplyr::distinct(duration_group, duration_intercept, one) %>%
+                       tidyr::spread(duration_group, duration_intercept) %>%
+                       dplyr::rename_at(.vars = vars(ends_with('days')),
+                                        .funs = list(~ stringr::str_c('b_Intercept_', .))),
+                     by = 'one'
+                     ) %>%
+    # add duration as dummy var
+    dplyr::left_join(d %>%
+                       dplyr::mutate(one = 1) %>%
+                       dplyr::distinct(duration_group, study_duration, one) %>%
+                       tidyr::spread(duration_group, one, fill = 0) %>%
+                       dplyr::rename_at(.vars = vars(ends_with('days')),
+                                        .funs = list(~ stringr::str_c('duration_', .))),
+                     by = 'study_duration') %>%
+    dplyr::select(-one)
   
-  # A data.frame with our simulated outcome data for each `.row` of our original data & each `.draw`
-  sim_data <- d %>%
-    dplyr::select(-sufficient_response) %>%
-    tidybayes::add_predicted_draws(model = prior_fit, prediction = 'sufficient_response', n = NULL) %>% 
-    dplyr::ungroup() %>%
-    dplyr::select(-.chain, -.iteration)
-
-  # construct a data.frame with the "true" parameter values used to simulate each draw
-  sim_params <- tidybayes::spread_draws(prior_fit, b_Intercept, b_duration_5_days, b_duration_27_days, b_notify_high) %>%
-    dplyr::select(-.chain, -.iteration) %>%
-    dplyr::ungroup()
-  
-  # join simulated response data with "true" parameter values
-  sim_merged <- sim_data %>%
-    dplyr::left_join(sim_params, by = '.draw')
-
-  # return merged data as list of data.frames, one per draw
-  a <- sim_merged %>%
-    tidyr::nest(-.draw)
-  
-  structure(a$data,
-            prior_fit = prior_fit)
-} 
+}
 
