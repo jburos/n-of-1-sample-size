@@ -61,7 +61,7 @@ simulate_data_once <- function(total_n = 700,
     tidyr::uncount(weights = duration_n) %>%
     dplyr::mutate(notify_moderate = as.integer(rbernoulli(n = nrow(.), p = notify_prop)),
                   motivation_high = as.integer(rbernoulli(n = nrow(.), p = motivation_prop)),
-                  linpred = duration_intercept + b_notify_moderate*notify_moderate + b_motivation_high*motivation_prop,
+                  linpred = duration_intercept + b_notify_moderate*notify_moderate + b_motivation_high*motivation_high,
                   invlogit_linpred = brms::inv_logit_scaled(linpred)) %>%
     dplyr::group_by(invlogit_linpred) %>%
     dplyr::mutate(study_completion = as.integer(rbernoulli(n = n(), p = invlogit_linpred))) %>%
