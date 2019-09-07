@@ -28,6 +28,15 @@ simd <- simdata(n_draws = 100,
                 sample_props = c(0.2, 0.6, 0.2)
                 )
 
+# confirm that we have simulated the motivation effect
+simd %>%
+  dplyr::bind_rows(.id = '.draw') %>%
+  dplyr::distinct(duration_group, notify_moderate, motivation_high,
+                  scales::percent(invlogit_linpred))  %>%
+  dplyr::rename(`p` = `scales::percent(invlogit_linpred)`) %>%
+  dplyr::arrange(duration_group, notify_moderate, motivation_high) %>%
+  tidyr::spread(motivation_high, p, sep = ': ')
+
 # plot the prior on the intercept (proportion of responses completing study)
 tbl_df(list(
   study_completion = brms::inv_logit_scaled(

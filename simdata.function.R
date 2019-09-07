@@ -19,7 +19,9 @@ simdata <- function(n_draws = 10,
                     b_notify_moderate = log(1.1),
                     completion_props = c(0.3, 0.2, 0.1),
                     sample_props = c(0.2, 0.6, 0.2),
-                    duration_days = c(5, 15, 27), ...) {
+                    duration_days = c(5, 15, 27), 
+                    motivation_prop = 0.2, 
+                    b_motivation_high = log(1.2)) {
 
   # return simulated data as a list of data.frames `n_draws` long
   # where each data.frame is an independent simulation of the data with 
@@ -30,7 +32,9 @@ simdata <- function(n_draws = 10,
                                     notify_prop = notify_prop,
                                     completion_props = completion_props,
                                     sample_props = sample_props,
-                                    duration_days = duration_days, ...),
+                                    duration_days = duration_days,
+                                    motivation_prop = motivation_prop,
+                                    b_motivation_high = b_motivation_high),
                  simplify = F)
 }
 
