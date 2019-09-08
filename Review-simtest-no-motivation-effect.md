@@ -65,18 +65,17 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:right;">
 
-1
+0
 
 </td>
 
 <td style="text-align:left;">
 
-32.0%
+30.0%
 
 </td>
 
 </tr>
-
 <tr>
 
 <td style="text-align:left;">
@@ -87,13 +86,13 @@ scales::percent(invlogit\_linpred)
 
 <td style="text-align:right;">
 
-0
+1
 
 </td>
 
 <td style="text-align:left;">
 
-30.0%
+32.0%
 
 </td>
 
