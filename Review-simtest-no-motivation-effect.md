@@ -551,7 +551,7 @@ combinations.
 ### Prior on `b_Intercept`
 
 The `Intercept` term defines the proportion of the population in the
-15-day study length meeting the criteria for a “sufficient” response.
+15-day study length meeting the criteria for a “sufficient” response. Here, response is defined as rate of study completion.
 
 I have put a fairly narrow prior centered at the 20%
 mark:
