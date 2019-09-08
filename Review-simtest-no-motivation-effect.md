@@ -15,15 +15,15 @@ First we should review the parameters used to simulate our data. In this
 round of simulations, a fixed set of parameter values are used to
 simulate data for all of our draws. We have parameters for the
 completion rate according to duration consistent with 30%, 20%, and 10%
-response in the 5-day, 15-day and 27-day groups respectively where
-notification level is low.
+response (i.e. study completion) in the 5-day, 15-day and 27-day groups respectively where
+notification level is "low" (value of "0" in table below)
 
-Increasing the notification level to “moderate” confers a modest
+Increasing the notification level to “moderate” (value of "1" in table below) confers a modest
 increase in completion rate uniformly across these three groups. This is
 reflected by a fixed OR of 1.1 (roughly a 10% increase).
 
 These are the “target” completion rates for each of our groups used to
-simulate our data.
+simulate our data. 
 
 <table>
 
