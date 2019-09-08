@@ -55,7 +55,7 @@ In addition, we are assuming that the motivation level will be set into two grou
 
 Given these parameter values, these are the "target" completion rates for each of our groups used to simulate our data.
 
-```{r}
+```{r, results = 'asis'}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
   dplyr::distinct(duration_group, notify_moderate, motivation_high, scales::percent(invlogit_linpred))  %>%
@@ -69,7 +69,7 @@ Of course, each draw of simulated data has a different _observed_ completion rat
 
 Looking at the group sizes over our draws can give a sense of how this would be expected to vary in practice for a sample of this size (640 participants).
 
-```{r}
+```{r, results = 'asis'}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
   dplyr::filter(as.integer(.draw) <= 5) %>%
@@ -207,7 +207,7 @@ I would say these are (for each parameter):
 
 Summarizing these metrics for our 100 fits at this sample size (n = 640):
 
-```{r sim-results}
+```{r sim-results, results = 'asis'}
 extract_and_summarise <- function(sim_fit, sim_pars, ci_widths = c(0.9, 0.95)) {
   sim_fit %>%
     tidybayes::spread_draws(`b_.*`, regex = TRUE) %>%
