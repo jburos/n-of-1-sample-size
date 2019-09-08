@@ -579,14 +579,14 @@ this because there is significant density at a two-fold difference in
 response depending on the study duration (however – maybe this is
 right?).
 
-### Prior on `b_notify_high`
+### Prior on `b_notify_moderate`
 
 Finally we will review the priors on our notification level.
 
 Here we start with a more narrow prior than for the duration since I
 expect this will be a weaker effect.
 
-Our prior is: .
+Our prior is: . <-- @jacki
 
 Let’s see how that translates into a more familiar metric such as an
 OR.
