@@ -53,6 +53,12 @@ motivation\_high: 0
 
 </th>
 
+<th style="text-align:left;">
+
+motivation\_high: 1
+
+</th>
+
 </tr>
 
 </thead>
@@ -79,6 +85,12 @@ motivation\_high: 0
 
 </td>
 
+<td style="text-align:left;">
+
+34.0%
+
+</td>
+
 </tr>
 
 <tr>
@@ -98,6 +110,12 @@ motivation\_high: 0
 <td style="text-align:left;">
 
 32.0%
+
+</td>
+
+<td style="text-align:left;">
+
+36.1%
 
 </td>
 
@@ -123,6 +141,12 @@ motivation\_high: 0
 
 </td>
 
+<td style="text-align:left;">
+
+23.1%
+
+</td>
+
 </tr>
 
 <tr>
@@ -142,6 +166,12 @@ motivation\_high: 0
 <td style="text-align:left;">
 
 21.6%
+
+</td>
+
+<td style="text-align:left;">
+
+24.8%
 
 </td>
 
@@ -167,6 +197,12 @@ motivation\_high: 0
 
 </td>
 
+<td style="text-align:left;">
+
+11.8%
+
+</td>
+
 </tr>
 
 <tr>
@@ -186,6 +222,12 @@ motivation\_high: 0
 <td style="text-align:left;">
 
 10.9%
+
+</td>
+
+<td style="text-align:left;">
+
+12.8%
 
 </td>
 
@@ -288,31 +330,83 @@ motivation\_high
 
 <td style="text-align:right;">
 
-63
+49
 
 </td>
 
 <td style="text-align:right;">
 
-68
+51
 
 </td>
 
 <td style="text-align:right;">
 
-60
+50
 
 </td>
 
 <td style="text-align:right;">
 
-63
+50
 
 </td>
 
 <td style="text-align:right;">
 
-67
+52
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+5\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+14
+
+</td>
+
+<td style="text-align:right;">
+
+17
+
+</td>
+
+<td style="text-align:right;">
+
+10
+
+</td>
+
+<td style="text-align:right;">
+
+13
+
+</td>
+
+<td style="text-align:right;">
+
+15
 
 </td>
 
@@ -340,221 +434,7 @@ motivation\_high
 
 <td style="text-align:right;">
 
-70
-
-</td>
-
-<td style="text-align:right;">
-
-65
-
-</td>
-
-<td style="text-align:right;">
-
-64
-
-</td>
-
-<td style="text-align:right;">
-
-50
-
-</td>
-
-<td style="text-align:right;">
-
-76
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-204
-
-</td>
-
-<td style="text-align:right;">
-
-198
-
-</td>
-
-<td style="text-align:right;">
-
-188
-
-</td>
-
-<td style="text-align:right;">
-
-204
-
-</td>
-
-<td style="text-align:right;">
-
-182
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-15\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-202
-
-</td>
-
-<td style="text-align:right;">
-
-171
-
-</td>
-
-<td style="text-align:right;">
-
-202
-
-</td>
-
-<td style="text-align:right;">
-
-183
-
-</td>
-
-<td style="text-align:right;">
-
-197
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-52
-
-</td>
-
-<td style="text-align:right;">
-
-74
-
-</td>
-
-<td style="text-align:right;">
-
-73
-
-</td>
-
-<td style="text-align:right;">
-
-74
-
-</td>
-
-<td style="text-align:right;">
-
-58
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-27\_days
-
-</td>
-
-<td style="text-align:right;">
-
-1
-
-</td>
-
-<td style="text-align:right;">
-
-0
-
-</td>
-
-<td style="text-align:right;">
-
-49
-
-</td>
-
-<td style="text-align:right;">
-
-64
+54
 
 </td>
 
@@ -566,13 +446,487 @@ motivation\_high
 
 <td style="text-align:right;">
 
-66
+52
+
+</td>
+
+<td style="text-align:right;">
+
+40
+
+</td>
+
+<td style="text-align:right;">
+
+62
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+5\_days
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+16
+
+</td>
+
+<td style="text-align:right;">
+
+12
+
+</td>
+
+<td style="text-align:right;">
+
+12
+
+</td>
+
+<td style="text-align:right;">
+
+10
+
+</td>
+
+<td style="text-align:right;">
+
+14
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+160
+
+</td>
+
+<td style="text-align:right;">
+
+164
+
+</td>
+
+<td style="text-align:right;">
+
+149
+
+</td>
+
+<td style="text-align:right;">
+
+163
+
+</td>
+
+<td style="text-align:right;">
+
+143
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+44
+
+</td>
+
+<td style="text-align:right;">
+
+34
+
+</td>
+
+<td style="text-align:right;">
+
+39
+
+</td>
+
+<td style="text-align:right;">
+
+41
+
+</td>
+
+<td style="text-align:right;">
+
+39
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+167
+
+</td>
+
+<td style="text-align:right;">
+
+132
+
+</td>
+
+<td style="text-align:right;">
+
+173
+
+</td>
+
+<td style="text-align:right;">
+
+149
+
+</td>
+
+<td style="text-align:right;">
+
+155
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+15\_days
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+35
+
+</td>
+
+<td style="text-align:right;">
+
+39
+
+</td>
+
+<td style="text-align:right;">
+
+29
+
+</td>
+
+<td style="text-align:right;">
+
+34
+
+</td>
+
+<td style="text-align:right;">
+
+42
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+27\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+41
 
 </td>
 
 <td style="text-align:right;">
 
 60
+
+</td>
+
+<td style="text-align:right;">
+
+59
+
+</td>
+
+<td style="text-align:right;">
+
+68
+
+</td>
+
+<td style="text-align:right;">
+
+48
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+27\_days
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+11
+
+</td>
+
+<td style="text-align:right;">
+
+14
+
+</td>
+
+<td style="text-align:right;">
+
+14
+
+</td>
+
+<td style="text-align:right;">
+
+6
+
+</td>
+
+<td style="text-align:right;">
+
+10
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+27\_days
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+0
+
+</td>
+
+<td style="text-align:right;">
+
+43
+
+</td>
+
+<td style="text-align:right;">
+
+51
+
+</td>
+
+<td style="text-align:right;">
+
+41
+
+</td>
+
+<td style="text-align:right;">
+
+51
+
+</td>
+
+<td style="text-align:right;">
+
+52
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+27\_days
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+1
+
+</td>
+
+<td style="text-align:right;">
+
+6
+
+</td>
+
+<td style="text-align:right;">
+
+13
+
+</td>
+
+<td style="text-align:right;">
+
+12
+
+</td>
+
+<td style="text-align:right;">
+
+15
+
+</td>
+
+<td style="text-align:right;">
+
+8
 
 </td>
 
@@ -751,19 +1105,19 @@ b\_duration\_27\_days
 
 <td style="text-align:right;">
 
-0.9268251
+0.9189272
 
 </td>
 
 <td style="text-align:left;">
 
-92.0%
+90.0%
 
 </td>
 
 <td style="text-align:left;">
 
-26.0%
+17.0%
 
 </td>
 
@@ -797,19 +1151,19 @@ b\_duration\_5\_days
 
 <td style="text-align:right;">
 
-0.7893021
+0.7849221
 
 </td>
 
 <td style="text-align:left;">
 
-98.0%
+94.0%
 
 </td>
 
 <td style="text-align:left;">
 
-42.0%
+37.0%
 
 </td>
 
@@ -843,13 +1197,13 @@ b\_Intercept
 
 <td style="text-align:right;">
 
-0.4772943
+0.5035278
 
 </td>
 
 <td style="text-align:left;">
 
-95.0%
+94.0%
 
 </td>
 
@@ -889,31 +1243,31 @@ b\_motivation\_high
 
 <td style="text-align:right;">
 
-1.5642697
+0.8125166
 
 </td>
 
 <td style="text-align:left;">
 
-100.0%
+95.0%
 
 </td>
 
 <td style="text-align:left;">
 
-100.0%
+96.0%
 
 </td>
 
 <td style="text-align:left;">
 
-NaN%
+25.0%
 
 </td>
 
 <td style="text-align:left;">
 
-NaN%
+75.0%
 
 </td>
 
@@ -935,7 +1289,7 @@ b\_notify\_moderate
 
 <td style="text-align:right;">
 
-0.3489257
+0.3482306
 
 </td>
 
