@@ -4,14 +4,16 @@ library(here)
 library(tidyverse)
 library(future)
 library(brms)
+library(furrr)
 source(here('simdata.function.R'))
-future::plan(multicore)
+future::plan(multiprocess)
 ggplot2::theme_set(theme_minimal())
+options(future.globals.maxSize = 1500*1024^2)
 
 # set the seed & run parameters
 seed <- 122355482
 run_date <- '2019-09-06'
-run_desc <- 'prototype_simtest_with_motivation'
+run_desc <- 'prototype_simtest_with_motivation_multiple_n'
 run_formula <- study_completion ~ duration_5_days + duration_27_days + notify_moderate + motivation_high
 set.seed(seed)
 
@@ -21,12 +23,17 @@ completion_rate <- 0.2
 priors <- specify_priors(completion_rate = completion_rate)
 
 # simulate data according to priors
-simd <- simdata(n_draws = 100,
-                total_n = 640,
-                completion_props = c(0.3, 0.2, 0.1),
-                duration_days = c(5, 15, 27),
-                sample_props = c(0.2, 0.6, 0.2)
-                )
+sample_sizes <- seq(from = 400, to = 1500, by = 50)
+simd <- 
+  sample_sizes %>%
+  furrr::future_map(~ simdata(n_draws = 500,
+                              total_n = .,
+                              completion_props = c(0.3, 0.2, 0.1),
+                              duration_days = c(5, 15, 27),
+                              sample_props = c(0.2, 0.6, 0.2)
+                              )
+                    ) %>%
+  unlist(., recursive = FALSE)
 
 # confirm that we have simulated the motivation effect
 simd %>%
@@ -37,40 +44,6 @@ simd %>%
   dplyr::arrange(duration_group, notify_moderate, motivation_high) %>%
   tidyr::spread(motivation_high, p, sep = ': ')
 
-# plot the prior on the intercept (proportion of responses completing study)
-tbl_df(list(
-  study_completion = brms::inv_logit_scaled(
-    brms::rstudent_t(n = 1000,
-                     df = 10,
-                     mu = brms::logit_scaled(completion_rate),
-                     sigma = 0.3)))) %>%
-  ggplot(., aes(x = study_completion)) + 
-  geom_density(fill = 'lightblue') +
-  geom_vline(aes(xintercept = completion_rate), linetype = 'dashed') + 
-  ggtitle('Prior distribution on `b_Intercept` (proportion of participants completing study)') + 
-  scale_x_continuous(labels = scales::percent, limits = c(0, 1)) +
-  labs(caption = glue::glue('Vertical line shows value at x = {completion_rate}'))
-
-# plot a summary of the simulated responses 
-sim_merged <- dplyr::bind_rows(simd, .id = '.draw')
-sim_merged %>% 
-  dplyr::group_by(.draw, duration_group, study_duration, notify_moderate) %>% 
-  dplyr::summarise(linear_predictor = mean(invlogit_linpred)) %>% 
-  ggplot(., aes(x = .draw, y = linear_predictor, colour = duration_group)) + 
-  geom_point(aes(shape = factor(notify_moderate), group = duration_group), position = position_dodge(width = 1)) + 
-  ggtitle('Linear predictor according to covariate values') +
-  scale_shape_manual('Moderate notification level', values = c(6, 19))
-
-sim_merged %>% 
-  dplyr::group_by(.draw, duration_group, study_duration, notify_moderate) %>% 
-  dplyr::summarise(completion_rate = mean(study_completion),
-                   linear_predictor = mean(invlogit_linpred)) %>% 
-  ggplot(., aes(x = .draw, y = completion_rate, colour = duration_group)) + 
-  geom_point(aes(shape = factor(notify_moderate), group = duration_group), position = position_dodge(width = 1)) + 
-  ggtitle('Observed completion rate by group, according to covariate values',
-          subtitle = 'for 10 draws of simulated data at random') +
-  scale_shape_manual('Moderate notification level', values = c(6, 19))
- 
 # now we fit our model to the simulated datasets
 simfits <- brms::brm_multiple(run_formula,
                               data = simd,
