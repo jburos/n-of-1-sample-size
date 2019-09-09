@@ -41,21 +41,21 @@ duration\_group
 
 </th>
 
-<th style="text-align:right;">
+<th style="text-align:left;">
 
-notify\_moderate
+notification\_level
 
 </th>
 
 <th style="text-align:left;">
 
-motivation\_high: 0
+not highly motivated (1-4)
 
 </th>
 
 <th style="text-align:left;">
 
-motivation\_high: 1
+highly motivated (5)
 
 </th>
 
@@ -73,9 +73,9 @@ motivation\_high: 1
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
@@ -101,9 +101,9 @@ motivation\_high: 1
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
@@ -129,9 +129,9 @@ motivation\_high: 1
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
@@ -157,9 +157,9 @@ motivation\_high: 1
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
@@ -185,9 +185,9 @@ motivation\_high: 1
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
@@ -213,9 +213,9 @@ motivation\_high: 1
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
@@ -260,15 +260,15 @@ duration\_group
 
 </th>
 
-<th style="text-align:right;">
+<th style="text-align:left;">
 
-notify\_moderate
+notification\_level
 
 </th>
 
-<th style="text-align:right;">
+<th style="text-align:left;">
 
-motivation\_high
+motivation\_level
 
 </th>
 
@@ -316,15 +316,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -368,15 +368,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -420,15 +420,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -472,15 +472,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -524,15 +524,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -576,15 +576,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -628,15 +628,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -680,15 +680,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -732,15 +732,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -784,15 +784,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -836,15 +836,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -888,15 +888,15 @@ motivation\_high
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -952,7 +952,9 @@ combinations.
 ### Prior on `b_Intercept`
 
 The `Intercept` term defines the proportion of the population in the
-15-day study length meeting the criteria for a “sufficient” response.
+15-day study length completing the study. By study “completion”, we mean
+that the participants met the minimum criteria for an evaluable
+response.
 
 I have put a fairly narrow prior centered at the 20%
 mark:
@@ -965,7 +967,7 @@ We originally started with what is a typical weakly informative prior
 (`normal(0, 1)`) on the `beta` effects describing the offset from the
 response at 15 days for the other two study durations of 5 & 27 days.
 However this led to much larger effect sizes than I would have expected
-(ie sufficient-response rates close to 80% in one group).
+(ie completion rates close to 80% in one group).
 
 In this set of responses the prior on these betas is more narrow:
 normal(0, 0.4).
@@ -980,14 +982,14 @@ this because there is significant density at a two-fold difference in
 response depending on the study duration (however – maybe this is
 right?).
 
-### Prior on `b_notify_high`
+### Prior on `b_notify_moderate`
 
 Finally we will review the priors on our notification level.
 
 Here we start with a more narrow prior than for the duration since I
 expect this will be a weaker effect.
 
-Our prior is: .
+Our prior is: normal(0, 0.1).
 
 Let’s see how that translates into a more familiar metric such as an
 OR.
@@ -1010,7 +1012,8 @@ values.
 Next, we will write a function to summarise the metrics we “really”
 (supposedly) care about in our particular use case.
 
-I would say these are (for each parameter):
+I would say these are (for each parameter, and for a given credible
+interval):
 
 1.  Width of posterior 90% CI (credible interval)
 2.  Does the true value fall within the 90% posterior credible interval

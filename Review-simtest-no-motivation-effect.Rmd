@@ -58,7 +58,10 @@ These are the "target" completion rates for each of our groups used to simulate 
 ```{r}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
-  dplyr::distinct(duration_group, notify_moderate, scales::percent(invlogit_linpred)) %>%
+  dplyr::mutate(completion_rate = scales::percent(invlogit_linpred),
+                notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
+  dplyr::distinct(duration_group, notification_level, completion_rate) %>%
+  dplyr::arrange(duration_group, notification_level) %>%
   kableExtra::kable(escape = FALSE)
 ```
 
@@ -102,7 +105,7 @@ simd %>%
 
 ### Prior on `b_Intercept`
 
-The `Intercept` term defines the proportion of the population in the 15-day study length meeting the criteria for a "sufficient" response.
+The `Intercept` term defines the proportion of the population in the 15-day study length completing the study. By "study completion", we mean that these participants satisfy the minimum criteria for an evaluable response.
 
 I have put a fairly narrow prior centered at the 20% mark:
 
@@ -141,13 +144,13 @@ tbl_df(list(`exp(beta)` = exp(
 
 This suggests even this distribution is too large for our betas -- I say this because there is significant density at a two-fold difference in response depending on the study duration (however -- maybe this is right?).
 
-### Prior on `b_notify_high`
+### Prior on `b_notify_moderate`
 
 Finally we will review the priors on our notification level.
 
 Here we start with a more narrow prior than for the duration since I expect this will be a weaker effect.
 
-Our prior is: `r priors %>% dplyr::filter(class == 'b' & coef == 'notify_high') %>% dplyr::select(prior) %>% unlist()`.
+Our prior is: `r priors %>% dplyr::filter(class == 'b' & coef == 'notify_moderate') %>% dplyr::select(prior) %>% unlist()`.
 
 Let's see how that translates into a more familiar metric such as an OR.
 
