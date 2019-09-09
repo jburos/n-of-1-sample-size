@@ -15,15 +15,15 @@ First we should review the parameters used to simulate our data. In this
 round of simulations, a fixed set of parameter values are used to
 simulate data for all of our draws. We have parameters for the
 completion rate according to duration consistent with 30%, 20%, and 10%
-response (i.e. study completion) in the 5-day, 15-day and 27-day groups respectively where
-notification level is "low" (value of "0" in table below)
+response in the 5-day, 15-day and 27-day groups respectively where
+notification level is low.
 
-Increasing the notification level to “moderate” (value of "1" in table below) confers a modest
+Increasing the notification level to “moderate” confers a modest
 increase in completion rate uniformly across these three groups. This is
 reflected by a fixed OR of 1.1 (roughly a 10% increase).
 
 These are the “target” completion rates for each of our groups used to
-simulate our data. 
+simulate our data.
 
 <table>
 
@@ -37,15 +37,15 @@ duration\_group
 
 </th>
 
-<th style="text-align:right;">
+<th style="text-align:left;">
 
-notify\_moderate
+notification\_level
 
 </th>
 
 <th style="text-align:left;">
 
-scales::percent(invlogit\_linpred)
+completion\_rate
 
 </th>
 
@@ -63,9 +63,9 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
@@ -76,6 +76,7 @@ scales::percent(invlogit\_linpred)
 </td>
 
 </tr>
+
 <tr>
 
 <td style="text-align:left;">
@@ -84,9 +85,9 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
@@ -106,9 +107,9 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
@@ -128,9 +129,9 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
@@ -150,9 +151,9 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+low
 
 </td>
 
@@ -172,9 +173,9 @@ scales::percent(invlogit\_linpred)
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+moderate
 
 </td>
 
@@ -551,7 +552,9 @@ combinations.
 ### Prior on `b_Intercept`
 
 The `Intercept` term defines the proportion of the population in the
-15-day study length meeting the criteria for a “sufficient” response. Here, response is defined as rate of study completion.
+15-day study length completing the study. By “study completion”, we mean
+that these participants satisfy the minimum criteria for an evaluable
+response.
 
 I have put a fairly narrow prior centered at the 20%
 mark:
@@ -586,7 +589,7 @@ Finally we will review the priors on our notification level.
 Here we start with a more narrow prior than for the duration since I
 expect this will be a weaker effect.
 
-Our prior is: . <-- @jacki
+Our prior is: normal(0, 0.1).
 
 Let’s see how that translates into a more familiar metric such as an
 OR.
