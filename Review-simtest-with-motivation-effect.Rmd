@@ -58,10 +58,12 @@ Given these parameter values, these are the "target" completion rates for each o
 ```{r, results = 'asis'}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
-  dplyr::distinct(duration_group, notify_moderate, motivation_high, scales::percent(invlogit_linpred))  %>%
+  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
+  dplyr::distinct(duration_group, notification_level, motivation_high, 
+                  scales::percent(invlogit_linpred))  %>%
   dplyr::rename(`p` = `scales::percent(invlogit_linpred)`) %>%
-  dplyr::arrange(duration_group, notify_moderate, motivation_high) %>%
   tidyr::spread(motivation_high, p, sep = ': ') %>%
+  dplyr::arrange(duration_group, notification_level) %>%
   kableExtra::kable()
 ```
 
@@ -72,8 +74,9 @@ Looking at the group sizes over our draws can give a sense of how this would be 
 ```{r, results = 'asis'}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
+  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
   dplyr::filter(as.integer(.draw) <= 5) %>%
-  dplyr::group_by(.draw, duration_group, notify_moderate, motivation_high) %>%
+  dplyr::group_by(.draw, duration_group, notification_level, motivation_high) %>%
   dplyr::summarise(group_n = n()) %>%
   dplyr::ungroup() %>%
   tidyr::spread(.draw, group_n)  %>%
@@ -89,13 +92,14 @@ Here is a sample of the observed completion rates for each of our 6 covariate co
 ```{r}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
+  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
   dplyr::filter(as.integer(.draw) <= 10) %>%
   dplyr::mutate(.draw = factor(as.integer(.draw), ordered = T)) %>%
-  dplyr::group_by(.draw, duration_group, study_duration, notify_moderate) %>% 
+  dplyr::group_by(.draw, duration_group, study_duration, notification_level) %>% 
   dplyr::summarise(completion_rate = mean(study_completion),
                    linear_predictor = mean(invlogit_linpred)) %>% 
   ggplot(., aes(x = .draw, y = completion_rate, colour = duration_group)) + 
-  geom_point(aes(shape = factor(notify_moderate), group = duration_group), position = position_dodge(width = 1)) + 
+  geom_point(aes(shape = factor(notification_level), group = duration_group), position = position_dodge(width = 1)) + 
   ggtitle('Observed completion rate by covariate values',
           subtitle = 'for 10 draws of simulated data') +
   scale_shape_manual('Moderate notification level', values = c(6, 19))
@@ -105,27 +109,27 @@ simd %>%
 
 ### Prior on `b_Intercept`
 
-The `Intercept` term defines the proportion of the population in the 15-day study length meeting the criteria for a "sufficient" response.
+The `Intercept` term defines the proportion of the population in the 15-day study length completing the study. By study "completion", we mean that the participants met the minimum criteria for an evaluable response.
 
 I have put a fairly narrow prior centered at the 20% mark:
 
 ```{r prior-Intercept-plot, echo = FALSE}
-tbl_df(list(sufficient_response = brms::inv_logit_scaled(
+tbl_df(list(completion_rate = brms::inv_logit_scaled(
   brms::rstudent_t(n = 1000,
                    df = 10,
                    mu = brms::logit_scaled(response_prop),
                    sigma = 0.3)))) %>%
-  ggplot(., aes(x = sufficient_response)) + 
+  ggplot(., aes(x = completion_rate)) + 
   geom_density(fill = 'lightblue') +
   geom_vline(aes(xintercept = response_prop), linetype = 'dashed') + 
-  ggtitle('Prior distribution on `b_Intercept` (proportion of responses meeting criteria)') + 
+  ggtitle('Prior distribution on `b_Intercept` (proportion of participants completing study)') + 
   scale_x_continuous(labels = scales::percent, limits = c(0, 1)) +
   labs(caption = glue::glue('Vertical line shows value at x = {response_prop}'))
 ```
 
 ### Prior on `b_duration_X`
 
-We originally started with what is a typical weakly informative prior (`normal(0, 1)`) on the `beta` effects describing the offset from the response at 15 days for the other two study durations of 5 & 27 days. However this led to much larger effect sizes than I would have expected (ie sufficient-response rates close to 80% in one group).
+We originally started with what is a typical weakly informative prior (`normal(0, 1)`) on the `beta` effects describing the offset from the response at 15 days for the other two study durations of 5 & 27 days. However this led to much larger effect sizes than I would have expected (ie completion rates close to 80% in one group).
 
 In this set of responses the prior on these betas is more narrow: `r priors %>% dplyr::filter(class == 'b' & coef == '') %>% dplyr::select(prior) %>% unlist()`.
 
@@ -138,19 +142,19 @@ tbl_df(list(`exp(beta)` = exp(
   ggplot(., aes(x = `exp(beta)`)) + 
   geom_density(fill = 'lightgrey') +
   geom_vline(aes(xintercept = exp(0)), linetype = 'dashed') + 
-  ggtitle('Prior distribution on `b_duration_X` (duration impact on response)') + 
+  ggtitle('Prior distribution on `b_duration_X` (duration impact on completion rate)') + 
   labs(caption = glue::glue('Vertical line shows value at x = exp(0)'))
 ```
 
 This suggests even this distribution is too large for our betas -- I say this because there is significant density at a two-fold difference in response depending on the study duration (however -- maybe this is right?).
 
-### Prior on `b_notify_high`
+### Prior on `b_notify_moderate`
 
 Finally we will review the priors on our notification level.
 
 Here we start with a more narrow prior than for the duration since I expect this will be a weaker effect.
 
-Our prior is: `r priors %>% dplyr::filter(class == 'b' & coef == 'notify_high') %>% dplyr::select(prior) %>% unlist()`.
+Our prior is: `r priors %>% dplyr::filter(class == 'b' & coef == 'notify_moderate') %>% dplyr::select(prior) %>% unlist()`.
 
 Let's see how that translates into a more familiar metric such as an OR.
 
@@ -160,7 +164,7 @@ tbl_df(list(`exp(beta)` = exp(
   ggplot(., aes(x = `exp(beta)`)) + 
   geom_density(fill = 'lightpink') +
   geom_vline(aes(xintercept = exp(0)), linetype = 'dashed') + 
-  ggtitle('Prior distribution on `b_notify_high` (notification impact on response)') + 
+  ggtitle('Prior distribution on `b_notify_moderate` (notification impact on completion rate)') + 
   labs(caption = glue::glue('Vertical line shows value at x = exp(0)'))
 ```
 
@@ -188,7 +192,7 @@ bayesplot::mcmc_recover_intervals(as.array(sim_fit, pars = names(sim_pars)), tru
 
 Next, we will write a function to summarise the metrics we "really" (supposedly) care about in our particular use case.
 
-I would say these are (for each parameter):
+I would say these are (for each parameter, and for a given credible interval):
 
 1. Width of posterior 90% CI (credible interval)
 2. Does the true value fall within the 90% posterior credible interval (check calibration)
