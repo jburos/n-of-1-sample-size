@@ -49,13 +49,13 @@ notification\_level
 
 <th style="text-align:left;">
 
-motivation\_high: 0
+not highly motivated (1-4)
 
 </th>
 
 <th style="text-align:left;">
 
-motivation\_high: 1
+highly motivated (5)
 
 </th>
 
@@ -266,9 +266,9 @@ notification\_level
 
 </th>
 
-<th style="text-align:right;">
+<th style="text-align:left;">
 
-motivation\_high
+motivation\_level
 
 </th>
 
@@ -322,9 +322,9 @@ low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -374,9 +374,9 @@ low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -426,9 +426,9 @@ moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -478,9 +478,9 @@ moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -530,9 +530,9 @@ low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -582,9 +582,9 @@ low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -634,9 +634,9 @@ moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -686,9 +686,9 @@ moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -738,9 +738,9 @@ low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -790,9 +790,9 @@ low
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 
@@ -842,9 +842,9 @@ moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-0
+not highly motivated (1-4)
 
 </td>
 
@@ -894,9 +894,9 @@ moderate
 
 </td>
 
-<td style="text-align:right;">
+<td style="text-align:left;">
 
-1
+highly motivated (5)
 
 </td>
 

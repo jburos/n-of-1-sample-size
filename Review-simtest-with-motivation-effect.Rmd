@@ -58,11 +58,14 @@ Given these parameter values, these are the "target" completion rates for each o
 ```{r, results = 'asis'}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
-  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
-  dplyr::distinct(duration_group, notification_level, motivation_high, 
+  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low'),
+                motivation_level = factor(ifelse(motivation_high == 1, 'highly motivated (5)', 'not highly motivated (1-4)'),
+                                          levels = c('not highly motivated (1-4)', 'highly motivated (5)'),
+                                          ordered = T)) %>%
+  dplyr::distinct(duration_group, notification_level, motivation_level, 
                   scales::percent(invlogit_linpred))  %>%
   dplyr::rename(`p` = `scales::percent(invlogit_linpred)`) %>%
-  tidyr::spread(motivation_high, p, sep = ': ') %>%
+  tidyr::spread(motivation_level, p) %>%
   dplyr::arrange(duration_group, notification_level) %>%
   kableExtra::kable()
 ```
@@ -74,9 +77,12 @@ Looking at the group sizes over our draws can give a sense of how this would be 
 ```{r, results = 'asis'}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
-  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
+  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low'),
+                motivation_level = factor(ifelse(motivation_high == 1, 'highly motivated (5)', 'not highly motivated (1-4)'),
+                                          levels = c('not highly motivated (1-4)', 'highly motivated (5)'),
+                                          ordered = T)) %>%
   dplyr::filter(as.integer(.draw) <= 5) %>%
-  dplyr::group_by(.draw, duration_group, notification_level, motivation_high) %>%
+  dplyr::group_by(.draw, duration_group, notification_level, motivation_level) %>%
   dplyr::summarise(group_n = n()) %>%
   dplyr::ungroup() %>%
   tidyr::spread(.draw, group_n)  %>%
@@ -92,7 +98,10 @@ Here is a sample of the observed completion rates for each of our 6 covariate co
 ```{r}
 simd %>%
   dplyr::bind_rows(.id = '.draw') %>%
-  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')) %>%
+  dplyr::mutate(notification_level = ifelse(notify_moderate == 1, 'moderate', 'low'),
+                motivation_level = factor(ifelse(motivation_high == 1, 'highly motivated (5)', 'not highly motivated (1-4)'),
+                                          levels = c('not highly motivated (1-4)', 'highly motivated (5)'),
+                                          ordered = T)) %>%
   dplyr::filter(as.integer(.draw) <= 10) %>%
   dplyr::mutate(.draw = factor(as.integer(.draw), ordered = T)) %>%
   dplyr::group_by(.draw, duration_group, study_duration, notification_level) %>% 
@@ -102,7 +111,7 @@ simd %>%
   geom_point(aes(shape = factor(notification_level), group = duration_group), position = position_dodge(width = 1)) + 
   ggtitle('Observed completion rate by covariate values',
           subtitle = 'for 10 draws of simulated data') +
-  scale_shape_manual('Moderate notification level', values = c(6, 19))
+  scale_shape_manual('Notification level', values = c(6, 19))
 ```
 
 ## Review priors for the model fit
