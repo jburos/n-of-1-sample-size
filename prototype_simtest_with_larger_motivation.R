@@ -41,7 +41,8 @@ simfits <- brms::brm_multiple(run_formula,
                               family = bernoulli,
                               prior = priors,
                               combine = FALSE,
-                              seed = seed
+                              seed = seed,
+                              future = FALSE
                               )
 
 # save simfits object to disk
