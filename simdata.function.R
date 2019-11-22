@@ -1,4 +1,6 @@
-library(rstan)
+library(here)
+library(StanHeaders, lib.loc = here::here('.Rlib'))
+library(rstan, lib.loc = here::here('.Rlib'))
 library(brms)
 library(tidyverse)
 library(tidybayes)
@@ -19,9 +21,8 @@ simdata <- function(n_draws = 10,
                     b_notify_moderate = log(1.1),
                     completion_props = c(0.3, 0.2, 0.1),
                     sample_props = c(0.2, 0.6, 0.2),
-                    duration_days = c(5, 15, 27), 
-                    motivation_prop = 0.2, 
-                    b_motivation_high = log(1.2)) {
+                    duration_days = c(5, 15, 27),
+                    b_motivation_level = c(log(1.1), log(1.2), log(1.3))) {
 
   # return simulated data as a list of data.frames `n_draws` long
   # where each data.frame is an independent simulation of the data with 
@@ -33,8 +34,7 @@ simdata <- function(n_draws = 10,
                                     completion_props = completion_props,
                                     sample_props = sample_props,
                                     duration_days = duration_days,
-                                    motivation_prop = motivation_prop,
-                                    b_motivation_high = b_motivation_high),
+                                    b_motivation_level = b_motivation_level),
                  simplify = F)
 }
 
@@ -47,9 +47,11 @@ get_duration_ns <- function(total_n = 700,
 
 simulate_data_once <- function(total_n = 700,
                                notify_prop = 0.5,
-                               motivation_prop = 0.2,
                                b_notify_moderate = log(1.1),
-                               b_motivation_high = log(1.2),
+                               b_motivation_level = c(log(1.1), log(1.2), log(1.3)),
+                               b_motivation_strong = c(0, 0, log(1.1)),
+                               b_motivation_disagree = c(0, 0, log(0.5)),
+                               n_motivation_groups = 5,
                                completion_props = c(0.3, 0.2, 0.1),
                                sample_props = c(0.2, 0.6, 0.2),
                                duration_days = c(5, 15, 27)) {
@@ -57,14 +59,19 @@ simulate_data_once <- function(total_n = 700,
                    sample_prop = sample_props,
                    duration_intercept = brms::logit_scaled(completion_props),
                    b_notify_moderate = b_notify_moderate,
-                   b_motivation_high = b_motivation_high,
-                   motivation_prop = motivation_prop
+                   b_motivation_level = b_motivation_level,
+                   b_motivation_strong = b_motivation_strong,
+                   b_motivation_disagree = b_motivation_disagree
   )) %>%
     dplyr::mutate(duration_n = get_duration_ns(total_n = total_n, sample_props = sample_prop)) %>%
     tidyr::uncount(weights = duration_n) %>%
-    dplyr::mutate(notify_moderate = as.integer(rbernoulli(n = nrow(.), p = notify_prop)),
-                  motivation_high = as.integer(rbernoulli(n = nrow(.), p = motivation_prop)),
-                  linpred = duration_intercept + b_notify_moderate*notify_moderate + b_motivation_high*motivation_high,
+    dplyr::mutate(notify_moderate = as.integer(rbernoulli(n = n(), p = notify_prop)),
+                  motivation_level_centered = as.integer(ceiling(runif(min = -3, max = 2, n = n()))), # centered at 3
+                  motivation_level_strong = ifelse(motivation_level_centered == 2, 1, 0),  # +2 == 5 (strongly agree)
+                  motivation_level_disagree = ifelse(motivation_level_centered < 0, 1, 0), # -1, -2 == 1=2 (disagree or strongly disagree)
+                  linpred = duration_intercept + b_notify_moderate*notify_moderate + b_motivation_level*motivation_level_centered +
+                    b_motivation_strong*motivation_level_strong + b_motivation_disagree*motivation_level_disagree,
+                  motivation_level = motivation_level_centered + min(motivation_level_centered) + 1,
                   invlogit_linpred = brms::inv_logit_scaled(linpred)) %>%
     dplyr::group_by(invlogit_linpred) %>%
     dplyr::mutate(study_completion = as.integer(rbernoulli(n = n(), p = invlogit_linpred))) %>%
@@ -73,7 +80,8 @@ simulate_data_once <- function(total_n = 700,
                                           levels = duration_days,
                                           labels = paste(duration_days, 'days', sep = '_'),
                                           ordered = T
-                                          )
+                                          ),
+                  notification_level = ifelse(notify_moderate == 1, 'moderate', 'low')
                   )
   
   # transform duration-group specific vars to wide format
