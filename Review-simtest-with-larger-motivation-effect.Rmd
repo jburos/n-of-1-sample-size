@@ -45,6 +45,12 @@ simfits <- readRDS(here('.brms_fits',
 
 The purpose of this document is to review the quality of model fits to simulated data. This document builds on an earlier doc by including a "motivation" effect on the outcome (completion rate) in addition to the effects of study duration & notification level.
 
+The earlier doc sets up some details about our simulation scenario. We are simulating data from an n-of-1 study in which participants are enrolled into a study with either a 5, 15, or 27 day duration, they are randomly assigned to either a high or low notification level, and the provide a self-reported motivation level. Since 2/3 assignments are randomized, we assume no correlation between the covariates of interest.
+
+The analysis method is a multivariate logistic regression fit using Stan (via the [brms](https://cran.r-project.org/package=brms) R package). 
+
+_Side note: The fits & other docs are generated using the [prototype_simtest_with_motivation.R](prototype_simtest_with_motivation.R) script included in this repository. Please refer to that script for details of how the data are simulated & the models fit._ 
+
 ## Review simulation parameters
 
 First we should review the parameters used to simulate our data. In this round of simulations, a fixed set of parameter values are used to simulate data for all of our draws. We have parameters for the completion rate according to duration consistent with 30%, 20%, and 10% response in the 5-day, 15-day and 27-day groups respectively where notification level is low. 
@@ -191,8 +197,8 @@ Next, we will write a function to summarise the metrics we "really" (supposedly)
 
 I would say these are (for each parameter):
 
-1. Width of posterior 90% CI (credible interval)
-2. Does the true value fall within the 90% posterior credible interval (check calibration)
+1. Width of posterior 95% CI (credible interval)
+2. Does the true value fall within the 95% posterior credible interval (check calibration)
 3. For regression parameters, estimate the Type S (sign) error rate [if CI excludes 0]
    - IE does this interval contain 0?
        - if so, consider this analysis as "inconclusive"
@@ -252,6 +258,8 @@ res %>%
   kableExtra::kable()
 ```
 
+Just to be clear, this uses a two-sided 95% posterior credible interval.
+
 The width of the credible intervals shown above, however, is on the log(OR) scale. It's not very easy to tell what that might look like in practice.
 
 Let's review what the posterior density for the OR looks like in order to better appreciate this.
@@ -269,8 +277,39 @@ simfits %>%
   ggtitle('Posterior Densities of Regression Parameters for n = 640')
 ```
 
+For notification level, most of our posterior intervals will be consistent with a weak effect, if any.
 
+Only the difference in completion rate for the 27-day group (vs 15 days) shows a consistently clear direction of effect at this sample size.
 
+## Review parameters across a range of sample sizes
+
+This shows us some of the details of our process for a sample size of 640 -- roughly the sample size proposed by the frequentist analysis.
+
+Next, we want to summarise the results of this process repeated across a range of sample sizes. These results were generated according to the code in [prototype_simtest_with_larger_motivation.R](prototype_simtest_with_larger_motivation.R). Here we read in the results from that simtest. We summarize "power" as the % of simulations in which the posterior 95% credible interval excludes a value of 0.
+
+```{r}
+seed <- 122355482
+run_date <- '2019-09-06'
+run_desc <- 'prototype_simtest_with_larger_motivation'
+sim_results <- readRDS(here::here('.brms_fits', glue::glue('{run_desc}_{run_date}_{seed}.sim_results.Rds')))
+(p <- sim_results %>% 
+    dplyr::mutate(alpha = 1 - .width) %>%
+    dplyr::filter(parname != 'b_Intercept') %>%
+    dplyr::group_by(parname, total_n, alpha) %>%
+    dplyr::summarise(power = 1 - mean(ci_contains_0)) %>%
+    dplyr::ungroup() %>%
+    ggplot(., aes(x = total_n, y = power, group = parname, colour = parname)) + 
+    geom_line() +
+    scale_y_continuous(labels = scales::percent) +
+    ggtitle('Power estimates for detecting a true effect for each parameter') +
+    labs(caption = 'Power reflects the probability of a posterior 95% CI excluding 0') +
+    geom_hline(aes(yintercept = 0.8), colour = 'lightgrey', linetype = 'dashed') +
+    scale_x_continuous('Sample size (n)') +
+    scale_colour_discrete('Parameter')
+  )
+```
+
+As in the simulations described above, this is for a Bayesian multivariate logistic regression analysis with terms for study duration (27 & 5 days vs 15 days), motivation level (as a global effect), and notification level (as a global effect). While we have simulated our data assuming some interaction effects between motivation & notification level and duration, we are not incorporating these interactions into the analysis.
 
 
 
